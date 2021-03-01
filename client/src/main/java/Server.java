@@ -30,6 +30,14 @@ public class Server {
         }
     }
 
+    public void sendPersonalMessage(String message, String username) {
+        for(ClientHandler client : clients) {
+            if(client.getUsername().equalsIgnoreCase(username)) {
+                client.sendMessage(message);
+            }
+        }
+    }
+
     public void broadcastClientsList() {
         StringBuilder sb = new StringBuilder();
         sb.append("@clients ");

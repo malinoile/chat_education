@@ -13,10 +13,11 @@ public class ClientHandler {
     private String username;
 
     public ClientHandler(Server server, Socket socket, Integer number) {
+
         try {
             this.server = server;
             this.socket = socket;
-            this.username = "Client " + number;
+            this.username = "Client" + number;
             in = new DataInputStream(socket.getInputStream());
             out = new DataOutputStream(socket.getOutputStream());
 
@@ -31,6 +32,9 @@ public class ClientHandler {
                             if(message.equalsIgnoreCase("@end")) {
                                 isChatting = false;
                                 disconnect();
+                            } else if(message.startsWith("@w ")) {
+                                String[] arrayStr = message.split(" ", 3);
+                                server.sendPersonalMessage(arrayStr[2], arrayStr[1]);
                             }
                         } else {
                             server.broadcastMessage(username + ": " + message);
