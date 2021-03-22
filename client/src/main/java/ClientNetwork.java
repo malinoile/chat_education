@@ -52,6 +52,8 @@ public class ClientNetwork {
                             isChatting = false;
                         } else if (message.startsWith("@clients ")) {
                             callOnChangeClientList.callback(message.substring(9));
+                        } else if(message.startsWith("@error ")) {
+                            callOnError.callback(message.split("\\s", 2)[1]);
                         } else {
                             callOnMessageReceived.callback(message);
                         }
@@ -65,7 +67,8 @@ public class ClientNetwork {
 
             new Thread(() -> {
                while(!isTimeOver && !isAuthorize) {
-                   System.out.println((System.currentTimeMillis() - startTime) / 1000);
+
+                   //Если пользователь не подключится в течение 2 минут - отключение от сервера
                    if((System.currentTimeMillis() - startTime) / 1000 > 120) {
                        callOnClose.callback(true);
                        isTimeOver = true;
