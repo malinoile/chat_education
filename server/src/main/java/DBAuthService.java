@@ -1,12 +1,27 @@
+import java.sql.*;
 import java.util.HashMap;
 
 public class DBAuthService implements AuthService {
     HashMap<String, String> users = new HashMap<>();
 
-    public DBAuthService(){
-        users.put("Vasya", "password");
-        users.put("Toto", "pass");
-        users.put("Foo", "foopass");
+    public DBAuthService() {
+        try {
+            Class.forName("org.sqlite.JDBC");
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+
+        try(
+                Connection connection = SingletonConnection.getDBConnection();
+                Statement statement = connection.createStatement();
+                ResultSet resultSet = statement.executeQuery("SELECT * FROM users")
+                ) {
+            while(resultSet.next()) {
+                users.put(resultSet.getString("username"), resultSet.getString("password"));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
