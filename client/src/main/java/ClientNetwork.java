@@ -52,6 +52,8 @@ public class ClientNetwork {
                             isChatting = false;
                         } else if (message.startsWith("@clients ")) {
                             callOnChangeClientList.callback(message.substring(9));
+                        } else if(message.startsWith("@error ")) {
+                            callOnError.callback(message.split("\\s", 2)[1]);
                         } else {
                             callOnMessageReceived.callback(message);
                         }

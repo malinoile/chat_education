@@ -23,7 +23,7 @@ public class ClientHandler {
                 String msg = null;
                 boolean isAuthorize = false;
                 try {
-                    while(!isAuthorize && isChatting) {
+                    while (!isAuthorize && isChatting) {
                         msg = in.readUTF();
 
                         if (msg.equalsIgnoreCase("@end")) {
@@ -31,11 +31,11 @@ public class ClientHandler {
                             isChatting = false;
                         }
 
-                        if(msg.startsWith("@login ")) {
+                        if (msg.startsWith("@login ")) {
                             String tokens[] = msg.split("\\s");
                             username = server.getAuthService().getNicknameByLoginAndPassword(tokens[1], tokens[2]);
 
-                            if(username != null) {
+                            if (username != null) {
                                 isAuthorize = true;
                                 sendMessage("@login_ok");
                                 server.subscribe(this);
@@ -52,6 +52,15 @@ public class ClientHandler {
                             if (msg.equalsIgnoreCase("@end")) {
                                 isChatting = false;
                                 sendMessage(msg);
+                            } else if (msg.startsWith("@change")) {
+                                String arr[] = msg.split("\\s", 2);
+                                System.out.println(arr[1]);
+                                if(server.getAuthService().changeNickname(username, arr[1])) {
+                                    username = arr[1];
+                                    server.broadcastUsers();
+                                } else {
+                                    sendMessage("@error Изменить имя пользователя не удалось.\nУкажите другое имя пользователя или попробуйте позднее");
+                                }
                             }
                         } else {
                             server.broadcastMessages(username + ": " + msg);
