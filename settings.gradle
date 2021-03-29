@@ -1,0 +1,4 @@
+rootProject.name = 'newChat'
+include 'server'
+include 'client'
+
